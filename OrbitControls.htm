@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Grupo de cubos</title>
+  <style>
+    body {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <script type="module">
+    import * as THREE from 'https://sebastiann16.github.io/CompG/three.module.js';
+    import { OrbitControls } from 'https://sebastiann16.github.io/CompG/OrbitControls.js';
+    var WIDTH = window.innerWidth;
+    var HEIGHT = window.innerHeight;
+
+    var renderer = new THREE.WebGLRenderer({ antialias: true });
+    renderer.setSize(WIDTH, HEIGHT);
+    renderer.setClearColor(0xDDDDDD, 1);
+    document.body.appendChild(renderer.domElement);
+    var scene = new THREE.Scene();
+//Camara
+var camera = new THREE.PerspectiveCamera(70, WIDTH / HEIGHT);
+camera.position.z = 20;
+camera.position.y = 5;
+scene.add(camera);
+//Luz
+const light = new THREE.AmbientLight(0x404040, 5);
+scene.add(light);
+
+//Creación de malla
+const size = 1000;
+const divisions = 1000;
+const gridHelper = new THREE.GridHelper( size, divisions );
+scene.add( gridHelper );
+
+//Creación de ejes X,Y,Z
+const axesHelper = new THREE.AxesHelper( 50 );
+scene.add( axesHelper );
+
+
+const color = [0x2c5a57, 0x4F9543, 0x84B342];
+
+function cubo(base, altura, ancho, col) {
+  const geometry = new THREE.BoxGeometry(base, altura, ancho);
+  const material = new THREE.MeshToonMaterial({ color: col });
+  return new THREE.Mesh(geometry, material);
+}
+
+var ArCub = [];
+var n = color.length;
+
+for (var i = 0; i < n; i++) {
+  var keyVar=1;
+
+  var lado = i+keyVar;
+
+  ArCub[i] = cubo(lado, lado, lado, color[i]);
+  ArCub[i].position.x = 0;                //Posición X
+  ArCub[i].position.y = 0;                //Posición Y
+  ArCub[i].position.z= lado/2;            //Posición Z
+}
+
+
+ArCub[0].position.x=lado/2;           
+ArCub[0].position.y=(lado/2)+keyVar*4;
+ArCub[0].position.z=lado/2;
+
+ArCub[1].position.x=lado/2;
+ArCub[1].position.y=(lado/2)+keyVar*2.5;
+ArCub[1].position.z=lado/2;
+
+ArCub[2].position.x=lado/2;
+ArCub[2].position.y=lado/2;
+ArCub[2].position.z=lado/2;
+
+
+
+
+const group = new THREE.Group();
+for (i = 0; i < n; i++) {
+  group.add(ArCub[i]);
+}
+
+scene.add(group);
+
+
+
+
+const controls = new OrbitControls(camera, renderer.domElement);
+
+
+function animate() {
+
+  requestAnimationFrame(animate);
+  controls.update();
+  renderer.render(scene, camera)
+}
+animate();
+</script>
+</body>
+
+</html>
